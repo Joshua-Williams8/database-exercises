@@ -1,5 +1,8 @@
 USE codeup_test_db;
 --        ('','',,,''),
+-- Last part of exercise.
+TRUNCATE albums;
+
 INSERT INTO albums (artist, name, release_date, sales, genre)
 VALUES ('Michael Jackson', 'Their Greatest Hits (1971–1975)', 1982, 47.3, 'Country rock, soft rock, folk rock'),
        ('AC/DC','Back in Black',1980,29.4,'Hard rock'),
