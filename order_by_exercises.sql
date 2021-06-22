@@ -22,9 +22,6 @@ FROM employees
 WHERE last_name LIKE 'E%e'
 ORDER BY emp_no;
 -- 6.
--- 6.1
-
--- 6.2
 SELECT *
 FROM employees
 WHERE last_name LIKE 'E%e'
