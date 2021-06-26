@@ -1,5 +1,5 @@
 USE
-employees;
+    employees;
 
 SELECT *
 FROM employees
@@ -64,8 +64,8 @@ ORDER BY birth_date;
 SELECT *
 FROM employees
 WHERE last_name LIKE 'E%e'
-ORDER BY emp_no DESC LIMIT 25
-OFFSET 20;
+ORDER BY emp_no DESC
+LIMIT 25 OFFSET 20;
 -- DESC makes it in DESCENDING order rather than ASC ascending order
 -- Limit makes it show only this amount of entries
 -- OFFSET makes it start at the 21 mark so skip 20 entries.
@@ -81,7 +81,7 @@ WHERE first_name = 'Maya';
 -- Shows all the names concated with the last_name.
 
 SELECT hire_date
-from employees
+FROM employees
 WHERE first_name = 'Maya';
 -- BELOW only grabs the day date. Not the month of year.
 SELECT DAYOFMONTH(hire_date)
@@ -89,6 +89,61 @@ from employees
 WHERE first_name = 'Maya'
 ORDER BY DAYOFMONTH(hire_date)
 -- Orders by date.
+
+-- Count function shows us the amount of entries.
+SELECT COUNT(*)
+FROM employees;
+-- GROUP BY
+SELECT COUNT(*)
+FROM employees
+GROUP BY last_name
+ORDER BY COUNT(*);
+-- You can't group by without having something to group? in the select.
+
+SELECT last_name
+FROM employees
+GROUP BY last_name;
+
+SELECT AVG(DATEDIFF(hire_date, birth_date) / 365)
+FROM employees;
+
+SELECT MAX(DATEDIFF(hire_date, birth_date) / 365)
+FROM employees;
+
+SELECT MIN(DATEDIFF(hire_date, birth_date) / 365)
+FROM employees;
+
+SELECT DISTINCT title
+FROM titles;
+# I changed dialect on accident earlier...
+
+# this groups everything by last name, rather than using the distinct keyword.
+# group by also requires that everything using in the group  needs to be in the select.
+SELECT last_name
+FROM employees
+WHERE last_name LIKE 'E%e'
+GROUP BY last_name;
+
+# Use of indexes is part of Query Optimization
+SHOW INDEXES from employees;
+# Shows meta data?
+
+select salary from salaries
+where salary between 50000 AND 70000;
+# Alter table doesn't actually effect the data
+# This allows us to not need to use as much processing power. When searching for data so we don't have to access EVERYTHING EVERYTIME.
+ALTER TABLE salaries ADD INDEX salary_index(salary);
+
+CREATE TABLE quotes {
+    id INT NOT NULL AUTO_INCREMENT,
+    content VARCHAR(240) NOT NULL,
+    author VARCHAR(50) NOT NULL,
+    PRIMARY KEY (id)
+    };
+ALTER TABLE quotes ADD UNIQUE (content);
+INSERT INTO quotes (content,author)
+VALUES('Test quote','authorMan');
+
 
 
 
