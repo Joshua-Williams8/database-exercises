@@ -50,3 +50,17 @@ WHERE de.to_date = '9999-01-01'
   AND s.to_date = '9999-01-01'
 ORDER BY Department_Name;
 
+# Study
+USE employees;
+#
+SELECT t.title,
+       COUNT(de.emp_no) AS Count
+FROM dept_emp AS de
+# I can have multiple conditions in my JOIN logic. Only current employees and current titles.
+         JOIN titles AS t ON de.emp_no = t.emp_no
+    AND t.to_date > CURDATE()
+    AND de.to_date > CURDATE()
+# I can have multiple conditions in my JOIN logic. Only the Customer Service department.
+         JOIN departments AS d ON d.dept_no = de.dept_no
+    AND dept_name = 'Customer Service'
+GROUP BY t.title;

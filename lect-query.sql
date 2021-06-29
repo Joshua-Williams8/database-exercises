@@ -1,8 +1,9 @@
 USE employees;
 
 SELECT employees.last_name, salaries.salary
-FROM employees JOIN salaries
-ON employees.emp_no = salaries.emp_no
+FROM employees
+         JOIN salaries
+              ON employees.emp_no = salaries.emp_no
 LIMIT 20;
 # So we are telling the server to search BOTH the employees and salary tables, and find EVERYwhere theres a MATCH.
 # EVERY MATch, WE grab the employees's last name and salary and display it.
@@ -15,8 +16,9 @@ FROM employees
               ON employees.emp_no = salaries.emp_no
 LIMIT 20;
 
-SELECT AVG(salary), gender FROM employees
-                                    JOIN salaries ON employees.emp_no = salaries.emp_no
+SELECT AVG(salary), gender
+FROM employees
+         JOIN salaries ON employees.emp_no = salaries.emp_no
 GROUP BY gender;
 
 # Stuff below is from class curiculum.
@@ -24,49 +26,61 @@ GROUP BY gender;
 CREATE DATABASE join_test_db;
 USE join_test_db;
 
-CREATE TABLE roles (
-                       id INT UNSIGNED NOT NULL AUTO_INCREMENT,
-                       name VARCHAR(100) NOT NULL,
-                       PRIMARY KEY (id)
+CREATE TABLE roles
+(
+    id   INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    name VARCHAR(100) NOT NULL,
+    PRIMARY KEY (id)
 );
 
-CREATE TABLE users (
-                       id INT UNSIGNED NOT NULL AUTO_INCREMENT,
-                       name VARCHAR(100) NOT NULL,
-                       email VARCHAR(100) NOT NULL,
-                       role_id INT UNSIGNED DEFAULT NULL,
-                       PRIMARY KEY (id),
-                       FOREIGN KEY (role_id) REFERENCES roles (id)
+CREATE TABLE users
+(
+    id      INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    name    VARCHAR(100) NOT NULL,
+    email   VARCHAR(100) NOT NULL,
+    role_id INT UNSIGNED DEFAULT NULL,
+    PRIMARY KEY (id),
+    FOREIGN KEY (role_id) REFERENCES roles (id)
 );
 
-INSERT INTO roles (name) VALUES ('admin');
-INSERT INTO roles (name) VALUES ('author');
-INSERT INTO roles (name) VALUES ('reviewer');
-INSERT INTO roles (name) VALUES ('commenter');
+INSERT INTO roles (name)
+VALUES ('admin');
+INSERT INTO roles (name)
+VALUES ('author');
+INSERT INTO roles (name)
+VALUES ('reviewer');
+INSERT INTO roles (name)
+VALUES ('commenter');
 
-INSERT INTO users (name, email, role_id) VALUES
-('bob', 'bob@example.com', 1),
-('joe', 'joe@example.com', 2),
-('sally', 'sally@example.com', 3),
-('adam', 'adam@example.com', 3),
-('jane', 'jane@example.com', null),
-('mike', 'mike@example.com', null);
+INSERT INTO users (name, email, role_id)
+VALUES ('bob', 'bob@example.com', 1),
+       ('joe', 'joe@example.com', 2),
+       ('sally', 'sally@example.com', 3),
+       ('adam', 'adam@example.com', 3),
+       ('jane', 'jane@example.com', null),
+       ('mike', 'mike@example.com', null);
 # Setup complete
 
 # LEFT JOIN is going to show rows on the left table EVEN IF there's no result.
 SELECT users.name AS user_name, roles.name AS role_name
-FROM users jOIN roles
-                ON users.role_id = role_id;
+FROM users
+         jOIN roles
+              ON users.role_id = role_id;
 
 
-CREATE TABLE persons (
-                         person_id INT NOT NULL AUTO_INCREMENT,
-                         first_name VARCHAR(25) NOT NULL,
-                         album_id INT NOT NULL,
-                         PRIMARY KEY (person_id)
+CREATE TABLE persons
+(
+    person_id  INT         NOT NULL AUTO_INCREMENT,
+    first_name VARCHAR(25) NOT NULL,
+    album_id   INT         NOT NULL,
+    PRIMARY KEY (person_id)
 );
 
-INSERT INTO persons (first_name, album_id) VALUES ('Olivia', 29), ('Santiago', 27), ('Tareq', 15), ('Anaya', 28);
+INSERT INTO persons (first_name, album_id)
+VALUES ('Olivia', 29),
+       ('Santiago', 27),
+       ('Tareq', 15),
+       ('Anaya', 28);
 
 
 # JOIN or INNER JOIN
@@ -89,11 +103,32 @@ FROM roles
 #
 
 
-
 # Creating a preference table
-CREATE TABLE preferences (
-                             person_id INT NOT NULL,
-                             album_id INT NOT NULL
+CREATE TABLE preferences
+(
+    person_id INT NOT NULL,
+    album_id  INT NOT NULL
 );
 
 #
+
+# SUB QUERIES BELOW
+# Using the INCLUDES clause
+USE employees;
+SELECT first_name, last_name, birth_date
+FROM employees
+WHERE emp_no IN (SELECT emp_no FROM dept_manager)
+LIMIT 10;
+# Were getting the first last and birthdates from employees, but we only want employees that are from department managers?
+# If I ran it without the where statement, I'd get different results from only dept managers.
+SELECT first_name, last_name, birth_date
+FROM employees
+WHERE emp_no IN (SELECT emp_no
+                 FROM dept_manager
+                 WHERE to_date LIKE '9999%')
+LIMIT 10;
+# AN in inside of an IN
+SELECT dept_name FROM departments WHERE dept_no
+                                            IN (SELECT dept_no FROM dept_manager WHERE emp_no
+                                                                                           IN (SELECT emp_no FROM employees WHERE first_name = 'Karsten' AND last_name = 'Sigstam'));
+# This one is getting us the department name from departments, where the dept no from dept manager where the emp number is the same, but for it to be the same we need the emp no from Karsten Sigstam, cause we want the department she managed.
